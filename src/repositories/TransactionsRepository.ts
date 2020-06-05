@@ -20,11 +20,38 @@ class TransactionsRepository {
   }
 
   public all(): Transaction[] {
-    // TODO
+    return this.transactions;
   }
 
   public getBalance(): Balance {
-    // TODO
+    const reducer = (currentValue: number, totalValue: number): number =>
+      currentValue + totalValue;
+
+    const retIncome = this.transactions
+      .map(el => {
+        if (el.type === 'income') {
+          return el.value;
+        }
+        return 0;
+      })
+      .reduce(reducer);
+
+    const retOutcome = this.transactions
+      .map(el => {
+        if (el.type === 'outcome') {
+          return el.value;
+        }
+        return 0;
+      })
+      .reduce(reducer);
+
+    const ret = {
+      income: retIncome,
+      outcome: retOutcome,
+      total: retIncome - retOutcome,
+    };
+
+    return ret;
   }
 
   public create({ title, value, type }: CreateTransactionDto): Transaction {

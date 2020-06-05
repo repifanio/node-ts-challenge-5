@@ -15,6 +15,16 @@ class CreateTransactionService {
   }
 
   public execute({ title, value, type }: Request): Transaction {
+    if (type === 'outcome') {
+      const balance = this.transactionsRepository.getBalance();
+
+      const saldo = balance.income - balance.outcome;
+
+      if (value > saldo) {
+        throw Error('Não há saldo suficiente');
+      }
+    }
+
     return this.transactionsRepository.create({ title, value, type });
   }
 }
